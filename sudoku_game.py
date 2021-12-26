@@ -138,9 +138,11 @@ def main():
 	start = time.time()
 
 	global board
+	global paused
+	global incorrect
 	draw_board(win, board, "0")
 	no_time = False
-	global paused
+	
 	while True:
 		play_time = round(time.time() - start)
 		time_display = format_time(play_time)
