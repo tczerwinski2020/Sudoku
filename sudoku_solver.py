@@ -1,5 +1,6 @@
 import random
 import math
+import re
 
 def solve_sudoku(grid, row, col):
     if (row == 8 and col == 9):
@@ -81,6 +82,45 @@ def print_board(board):
                 print(str(board[i][j]) + " ", end="")
 
 
+def update_high_score(filename, newscore, highscores, spot):
+    file = open(filename, "r+")
+    new_hs = []
+    for i in range(0,5):
+        if i == spot:
+            mid = re.search(":", newscore).start()
+            if len(newscore[mid +1:]) == 1:
+                score = newscore[:mid] + ":0" + newscore[mid+1:]
+            else:
+                score = newscore
+            row = [str(i+1), score]
+            new_hs.append(row)
+        elif i < spot:
+            new_hs.append(highscores[i])
+        else:
+            new_hs.append(highscores[i-1])
+    write_highschores(filename, new_hs)
+    return new_hs
+
+def write_highschores(filename, highscores):
+    file = open(filename, "r+")
+    file.seek(0)
+    for i in range(len(highscores)):
+
+        file.write(str(highscores[i][0]) + " " +str(highscores[i][1].strip()))
+        file.write("\n")
+        file.truncate()
+
+
+def get_high_scores(filename):
+    file = open(filename, "r+")
+    lines = file.readlines()
+    top5 = []
+    for line in lines:
+        row = line.split(" ")
+        top5.append(row)
+    return top5
+
+
 def get_board(filename, start):
     file = open(filename, "r")
     lines = file.readlines()
@@ -97,11 +137,8 @@ def get_board(filename, start):
 def get_rand_board(filename):
     num_lines = sum(1 for line in open('input.in'))
     rand = random.randint(0, num_lines)
-    print(num_lines)
-    print(rand)
     if rand == num_lines:
         rounded = num_lines - 9
     else:
         rounded = (rand//10)*10
-        print("ROUNDED " + str(rounded))
     return get_board("input.in", rounded)
